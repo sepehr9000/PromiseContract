@@ -1,52 +1,48 @@
-'use client'
+"use client";
 
-import { useAccount, useConnect, useDisconnect } from 'wagmi'
-import { WalletComponents } from './wallet'
-import TransactionComponents from './TransactionComponents'
+import { useAccount, useConnect, useDisconnect } from "wagmi";
+import { WalletComponents } from "./wallet";
+import TransactionComponents from "./TransactionComponents";
+import Link from "next/link";
 
-function App() {
-  const account = useAccount()
-  const { connectors, connect, status, error } = useConnect()
-  const { disconnect } = useDisconnect()
+export default function App() {
+  const { address, isConnected } = useAccount();
+  const { connect, connectors, error, isLoading, pendingConnector } =
+    useConnect();
+  const { disconnect } = useDisconnect();
 
   return (
-    <>
-      <div>
-        <WalletComponents/>
-        <TransactionComponents/>
-        {/* <h2>Account</h2>
+    <div className="min-h-screen flex flex-col p-4">
+      <header className="flex justify-between items-center mb-8">
+        <Link href="/" className="text-xl font-bold">
+          Home
+        </Link>
+        <button
+          onClick={
+            isConnected
+              ? () => disconnect()
+              : () => connect({ connector: connectors[0] })
+          }
+          className="px-4 py-2 bg-blue-500 text-black rounded"
+        >
+          {isConnected ? "Disconnect" : "Connect Wallet"}
+        </button>
+      </header>
 
-        <div>
-          status: {account.status}
-          <br />
-          addresses: {JSON.stringify(account.addresses)}
-          <br />
-          chainId: {account.chainId}
+      <main className="flex-grow flex flex-col items-center justify-center space-y-8">
+        <div className="space-x-4">
+          <button className="px-6 py-3 bg-green-500 text-black rounded">
+            Join
+          </button>
+          <button className="px-6 py-3 bg-purple-500 text-black rounded">
+            Create
+          </button>
         </div>
-
-        {account.status === 'connected' && (
-          <button type="button" onClick={() => disconnect()}>
-            Disconnect
-          </button>
-        )}
-      </div>
-
-      <div>
-        <h2>Connect</h2>
-        {connectors.map((connector) => (
-          <button
-            key={connector.uid}
-            onClick={() => connect({ connector })}
-            type="button"
-          >
-            {connector.name}
-          </button>
-        ))}
-        <div>{status}</div>
-        <div>{error?.message}</div> */}
-      </div>
-    </>
-  )
+        {/* <div className="w-full max-w-md">
+          <WalletComponents />
+          <TransactionComponents />
+        </div> */}
+      </main>
+    </div>
+  );
 }
-
-export default App
