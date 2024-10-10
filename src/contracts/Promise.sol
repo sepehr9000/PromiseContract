@@ -38,7 +38,7 @@ contract Promise {
     }
 
     modifier onlyMasterVerifier() {
-        require(msg.sender == masterVerifier, "Only Master Verifier Can Call This Function");
+        require(msg.sender == verifier, "Only Master Verifier Can Call This Function");
         _;
     }    address public verifier;
     mapping(address => uint) balances;
