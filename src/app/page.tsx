@@ -81,13 +81,18 @@ export default function App() {
         {/* Join and Create Buttons */}
         <div className="space-x-4">
           <Link href="/join">
-            <button className="px-80 py-80 bg-blue-500 text-white rounded hover:bg-blue-600 transition">
+            <button className="px-20 py-8 bg-blue-500 text-white rounded hover:bg-blue-600 transition">
               Join
             </button>
           </Link>
           <Link href="/create">
-            <button className="px-80 py-80 bg-blue-500 text-white rounded hover:bg-blue-600 transition">
+            <button className="px-20 py-8 bg-blue-500 text-white rounded hover:bg-blue-600 transition">
               Create
+            </button>
+          </Link>
+          <Link href="/mygroup">
+            <button className="px-20 py-8 bg-blue-500 text-white rounded hover:bg-blue-600 transition">
+              My Group
             </button>
           </Link>
         </div>
