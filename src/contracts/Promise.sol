@@ -71,7 +71,7 @@ contract Promise {
         numUsers = _numUsers;
         cadence = _cadence;
         name = _name;
-        expiry = _expiry;
+        expiry = _expiry + block.timestamp;
         verifier = _verifier;
         lastVoteTime = 0;
     }
