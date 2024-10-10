@@ -9,7 +9,38 @@ contract Promise {
     string public name;
     uint public expiry;
     address[] public users;
-    address public verifier;
+    address[] public losingUsers;
+
+    struct Vote {
+        mapping(address => bool) vote;
+        uint numVotes;
+        address participant;
+    }
+
+    Vote[] public votes;
+
+    modifier canVote(uint _round){
+        require(votes[_round].numVotes < users.length, "All Users Have Voted");
+        require(votes[_round].vote[msg.sender] == false, "User Has Already Voted");
+        _;
+    }
+
+    modifier onlyUsers() {
+        bool isUser = false;
+        for (uint i = 0; i < users.length; i++) {
+            if (users[i] == msg.sender) {
+                isUser = true;
+                break;
+            }
+        }
+        require(isUser, "Only users can call this function");
+        _;
+    }
+
+    modifier onlyMasterVerifier() {
+        require(msg.sender == masterVerifier, "Only Master Verifier Can Call This Function");
+        _;
+    }    address public verifier;
     mapping(address => uint) balances;
     mapping(address => bool) eligibleUsers;
 
@@ -20,6 +51,12 @@ contract Promise {
 
     modifier isOpen(){
         require(block.timestamp <= expiry, "Promise Has Already Expired");
+        _;
+    }
+
+    modifier isActive() {
+        require(block.timestamp <= expiry, "Promise Has Already Expired");
+        require(users.length == numUsers, "All Users Have Not Joined Yet");
         _;
     }
 
@@ -40,5 +77,15 @@ contract Promise {
         eligibleUsers[msg.sender] = true;
     }
 
-    function verifyUser() public 
+
+    function initiateVote() public onlyMasterVerifier isActive {
+        require(block.timestamp >= lastVoteTime + cadence, "There is already a voting event ongoing");
+
+        lastVoteTime = block.timestamp;
+        // Reset votes
+        for (uint i = 0; i < users.length; i++) {
+            delete votes[i];
+        }
+    }
+    
 }
