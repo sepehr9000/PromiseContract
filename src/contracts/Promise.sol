@@ -54,6 +54,11 @@ contract Promise {
         _;
     }
 
+    modifier isVerifier(){
+        require(msg.sender == verifier, "Caller Must be Authorized Verifier");
+        _;
+    }
+
     modifier isActive() {
         require(block.timestamp <= expiry, "Promise Has Already Expired");
         require(users.length == numUsers, "All Users Have Not Joined Yet");
@@ -88,4 +93,7 @@ contract Promise {
         }
     }
     
+    function userSatisfiedPromise(address _user, bool _didSatisfy) public isOpen isVerifier {
+        
+    }
 }
