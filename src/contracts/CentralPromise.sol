@@ -5,9 +5,9 @@ import "./Promise.sol";
 contract CentralPromise {
     
     Promise[] promises;
-
+    address masterVerifier;
     
-    function addPromise(uint entryFee, uint numUsers, uint cadence, string name, uint expiry) public payable {
+    function initPromise(uint entryFee, uint numUsers, uint cadence, string name, uint expiry) public payable {
         Promise _promise = new Promise(entryFee, numUsers, cadence, name, expiry);
         promises.add(_promise);
     }
