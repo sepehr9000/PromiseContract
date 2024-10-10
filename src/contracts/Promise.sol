@@ -1,4 +1,4 @@
-    // SPDX-License-Identifier: UNLICENSED
+// SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.13;
 
 contract Promise {
@@ -15,16 +15,17 @@ contract Promise {
     mapping(address => bool) eligibleUsers;
     uint public lastVoteTime;
 
-    struct Vote {
-        mapping(address => int) vote; // -1: not voted, 0: voted yes, 1: voted no
-        uint numVotes;
-    }
-
-    mapping(address => Vote) public votes;
+    mapping(address => address[]) public votedForMap; // user => users the user voted for
+    mapping(address => int) public voteScoreMap;
 
     modifier canVote(address _candidate){
-        require(votes[_candidate].numVotes == numUsers, "All Users Have Voted");
-        require(votes[_candidate].vote[msg.sender] != -1, "User Has Already Voted");
+        require(_candidate != msg.sender, "User Cannot Vote for Themselves");
+        for (uint i = 0; i < losingUsers.length; i++){
+            require(losingUsers[i] != _candidate, "Candidate is Not Eligible to be Voted For");
+        }
+        for (uint i = 0; i < votedForMap[msg.sender].length; i++){
+            require(votedForMap[msg.sender][i] != _candidate, "User Has Already Voted for This Candidate");
+        }
         _;
     }
 
@@ -95,26 +96,20 @@ contract Promise {
 
         lastVoteTime = block.timestamp;
         // Reset votes
-        for (uint i = 0; i < numUsers; i++) {
-            for (uint j = 0; j < numUsers; j++) {
-                votes[users[i]].vote[users[j]] = -1;
-            }
-            votes[users[i]].numVotes = 0;
+        for (uint i = 0; i < users.length; i++) {
+            votedForMap[users[i]] = new address[](0);
+            voteScoreMap[users[i]] = 0;
         }
     }
 
     function castVote(address user, bool vote) public onlyUsers isActive canVote(user) {
-        votes[user].vote[msg.sender] = vote ? int(0) : int(1);
-        votes[user].numVotes++;
+        votedForMap[msg.sender].push(user);
+        voteScoreMap[user] = vote ? int(1) : int(-1);
     }
 
     function finalizeVote() public onlyMasterVerifier isActive {
         for (uint i = 0; i < users.length; i++) {
-            int votesAgainst = 0;
-            for (uint j = 0; j < users.length; j++) {
-                votesAgainst += votes[users[i]].vote[users[j]] == -1 ? int(0) : votes[users[i]].vote[users[j]];
-            }
-            if (votesAgainst > int(votes[users[i]].numVotes) / 2) {
+            if (voteScoreMap[users[i]] < 0) {
                 losingUsers.push(users[i]);
             }
         }
