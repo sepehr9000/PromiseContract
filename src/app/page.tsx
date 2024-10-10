@@ -36,7 +36,6 @@ export default function App() {
         >
           Home
         </Link>
-        // omitted for brevity
         <Wallet>
           <ConnectWallet className="bg-blue-500">
             <ConnectWalletText>Log In</ConnectWalletText>

@@ -118,7 +118,7 @@ export default function CreatePage() {
             placeholder="Leave blank to redistribute funds"
           />
         </div>
-        <Link href="/success">
+        <Link href="/mygroup">
           <button
             type="submit"
             className="w-full py-2 px-4 bg-blue-500 text-white font-semibold rounded hover:bg-blue-600"

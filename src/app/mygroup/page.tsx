@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link"; // Import Link from next
 
 // Dummy Data (for active participants and users to verify)
 const dummyParticipants = [
@@ -38,10 +39,18 @@ export default function JoinGroupPage() {
 
   return (
     <div className="min-h-screen p-4 bg-gray-100">
+      {/* Link to go back to the Home Page */}
+      <Link
+        href="/"
+        className="text-xl font-bold text-blue-500 hover:text-blue-600"
+      >
+        Home
+      </Link>
+
       {/* Group Name Section */}
       <section className="mb-8">
         <h1 className="text-3xl font-bold mb-4">Group Name</h1>
-        <p className="text-lg mb-4">Due Date: 2024-12-31</p>
+        <p className="text-lg mb-4">Next Submission Date: 2024-12-31</p>
         <div className="flex items-center space-x-4">
           <input
             type="file"

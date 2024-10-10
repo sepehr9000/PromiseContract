@@ -57,12 +57,14 @@ export default function CreatePage() {
             className="px-4 py-2 border rounded w-64 text-center"
             placeholder="Enter group name"
           />
-          <button
-            onClick={handleJoinGroup}
-            className="px-6 py-3 bg-green-500 text-white rounded hover:bg-green-600 transition"
-          >
-            Join Group
-          </button>
+          <Link href="/mygroup">
+            <button
+              onClick={handleJoinGroup}
+              className="px-6 py-3 bg-green-500 text-white rounded hover:bg-green-600 transition"
+            >
+              Join Group
+            </button>
+          </Link>
         </div>
       </main>
     </div>
