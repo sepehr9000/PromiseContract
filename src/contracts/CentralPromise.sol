@@ -12,7 +12,8 @@ contract CentralPromise {
         promises.add(_promise);
     }
 
-    function increment() public {
-        number++;
+    function setMasterVerifier() public {
+        masterVerifier = msg.sender;
     }
+
 }
