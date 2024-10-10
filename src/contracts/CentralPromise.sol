@@ -4,8 +4,8 @@ import "./Promise.sol";
 
 contract CentralPromise {
     
-    Promise[] promises;
-    address masterVerifier;
+    Promise[] public promises;
+    address public masterVerifier;
     
     function initPromise(uint entryFee, uint numUsers, uint cadence, string memory name, uint expiry) public payable {
         Promise _promise = new Promise(entryFee, numUsers, cadence, name, expiry, masterVerifier);

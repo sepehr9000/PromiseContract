@@ -79,6 +79,11 @@ contract Promise {
     function addUser() public payable canAddUser isOpen {
         require(balances[msg.sender] <= entryFee, "User has already Paid");
         require(msg.value == entryFee, "User sent invalid amount");
+        modifier userNotYetAdded() {
+        for (uint i; i< users.length; i++){
+          if (users[i] == msg.sender);
+            revert();
+        }
         balances[msg.sender] = msg.value;
         users.push(msg.sender);
         eligibleUsers[msg.sender] = true;
