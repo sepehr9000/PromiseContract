@@ -32,12 +32,8 @@ export default function App() {
 
       <main className="flex-grow flex flex-col items-center justify-center space-y-8">
         <div className="space-x-4">
-          <button className="px-6 py-3 bg-green-500 text-black rounded">
-            Join
-          </button>
-          <button className="px-6 py-3 bg-purple-500 text-black rounded">
-            Create
-          </button>
+          <Link href="/join">Join</Link>
+          <Link href="/create">Create</Link>
         </div>
 
         {/* <TransactionComponents /> */}
