@@ -17,6 +17,7 @@ export default function App() {
         <Link href="/" className="text-xl font-bold">
           Home
         </Link>
+        {/* <WalletComponents /> */}
         <button
           onClick={
             isConnected
@@ -38,10 +39,8 @@ export default function App() {
             Create
           </button>
         </div>
-        {/* <div className="w-full max-w-md">
-          <WalletComponents />
-          <TransactionComponents />
-        </div> */}
+
+        {/* <TransactionComponents /> */}
       </main>
     </div>
   );
