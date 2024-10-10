@@ -7,9 +7,9 @@ contract CentralPromise {
     Promise[] promises;
     address masterVerifier;
     
-    function initPromise(uint entryFee, uint numUsers, uint cadence, string name, uint expiry) public payable {
+    function initPromise(uint entryFee, uint numUsers, uint cadence, string memory name, uint expiry) public payable {
         Promise _promise = new Promise(entryFee, numUsers, cadence, name, expiry, masterVerifier);
-        promises.add(_promise);
+        promises.push(_promise);
     }
 
     function setMasterVerifier() public {
