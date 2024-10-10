@@ -1,52 +1,25 @@
-'use client'
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { Home } from "lucide-react";
 
-import { useAccount, useConnect, useDisconnect } from 'wagmi'
-import { WalletComponents } from './wallet'
-import TransactionComponents from './TransactionComponents'
-
-function App() {
-  const account = useAccount()
-  const { connectors, connect, status, error } = useConnect()
-  const { disconnect } = useDisconnect()
-
+export default function Component() {
   return (
-    <>
-      <div>
-        <WalletComponents/>
-        <TransactionComponents/>
-        {/* <h2>Account</h2>
-
-        <div>
-          status: {account.status}
-          <br />
-          addresses: {JSON.stringify(account.addresses)}
-          <br />
-          chainId: {account.chainId}
+    <div className="min-h-screen flex flex-col">
+      <header className="w-full p-4 flex justify-between items-center bg-background">
+        <Link href="/">
+          <Button variant="ghost">
+            <Home className="h-6 w-6" />
+            <span className="sr-only">Home</span>
+          </Button>
+        </Link>
+        <Button>Connect Wallet</Button>
+      </header>
+      <main className="flex-grow flex items-center justify-center">
+        <div className="space-x-4">
+          <Button size="lg">Join</Button>
+          <Button size="lg">Create</Button>
         </div>
-
-        {account.status === 'connected' && (
-          <button type="button" onClick={() => disconnect()}>
-            Disconnect
-          </button>
-        )}
-      </div>
-
-      <div>
-        <h2>Connect</h2>
-        {connectors.map((connector) => (
-          <button
-            key={connector.uid}
-            onClick={() => connect({ connector })}
-            type="button"
-          >
-            {connector.name}
-          </button>
-        ))}
-        <div>{status}</div>
-        <div>{error?.message}</div> */}
-      </div>
-    </>
-  )
+      </main>
+    </div>
+  );
 }
-
-export default App
