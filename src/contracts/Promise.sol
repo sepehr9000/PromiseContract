@@ -10,6 +10,9 @@ contract Promise {
     uint public expiry;
     address[] public users;
     address[] public losingUsers;
+    address public verifier;
+    mapping(address => uint) balances;
+    mapping(address => bool) eligibleUsers;
 
     struct Vote {
         mapping(address => bool) vote;
@@ -40,9 +43,7 @@ contract Promise {
     modifier onlyMasterVerifier() {
         require(msg.sender == verifier, "Only Master Verifier Can Call This Function");
         _;
-    }    address public verifier;
-    mapping(address => uint) balances;
-    mapping(address => bool) eligibleUsers;
+    }
 
     modifier canAddUser(){
         require(users.length < numUsers, "Promise is Not Accepting New Users");
