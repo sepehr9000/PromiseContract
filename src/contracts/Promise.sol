@@ -16,15 +16,15 @@ contract Promise {
     uint public lastVoteTime;
 
     struct Vote {
-        mapping(address => bool) vote;
+        mapping(address => int) vote; // -1: not voted, 0: voted yes, 1: voted no
         uint numVotes;
     }
 
     mapping(address => Vote) public votes;
 
     modifier canVote(address _candidate){
-        require(votes[_candidate] == false, "All Users Have Voted");
-        require(votes[msg.sender] == false, "User Has Already Voted");
+        require(votes[_candidate].numVotes == numUsers, "All Users Have Voted");
+        require(votes[_candidate].vote[msg.sender] != -1, "User Has Already Voted");
         _;
     }
 
@@ -73,6 +73,7 @@ contract Promise {
         name = _name;
         expiry = _expiry;
         verifier = _verifier;
+        lastVoteTime = 0;
     }
 
     function addUser() public payable canAddUser isOpen {
@@ -89,22 +90,26 @@ contract Promise {
 
         lastVoteTime = block.timestamp;
         // Reset votes
-        for (uint i = 0; i < users.length; i++) {
-            for (uint j = 0; j < users.length; j++) {
-                votes[users[i]].vote[users[j]] = false;
+        for (uint i = 0; i < numUsers; i++) {
+            for (uint j = 0; j < numUsers; j++) {
+                votes[users[i]].vote[users[j]] = -1;
             }
             votes[users[i]].numVotes = 0;
         }
     }
 
     function castVote(address user, bool vote) public onlyUsers isActive canVote(user) {
-        votes[user].vote[msg.sender] = vote;
+        votes[user].vote[msg.sender] = vote ? int(0) : int(1);
         votes[user].numVotes++;
     }
 
     function finalizeVote() public onlyMasterVerifier isActive {
         for (uint i = 0; i < users.length; i++) {
-            if (votes[users[i]].numVotes < numUsers / 2) {
+            int votesAgainst = 0;
+            for (uint j = 0; j < users.length; j++) {
+                votesAgainst += votes[users[i]].vote[users[j]] == -1 ? int(0) : votes[users[i]].vote[users[j]];
+            }
+            if (votesAgainst > int(votes[users[i]].numVotes) / 2) {
                 losingUsers.push(users[i]);
             }
         }
