@@ -13,18 +13,18 @@ contract Promise {
     address public verifier;
     mapping(address => uint) balances;
     mapping(address => bool) eligibleUsers;
+    uint public lastVoteTime;
 
     struct Vote {
         mapping(address => bool) vote;
         uint numVotes;
-        address participant;
     }
 
-    Vote[] public votes;
+    mapping(address => Vote) public votes;
 
-    modifier canVote(uint _round){
-        require(votes[_round].numVotes < users.length, "All Users Have Voted");
-        require(votes[_round].vote[msg.sender] == false, "User Has Already Voted");
+    modifier canVote(address _candidate){
+        require(votes[_candidate] == false, "All Users Have Voted");
+        require(votes[msg.sender] == false, "User Has Already Voted");
         _;
     }
 
@@ -90,7 +90,23 @@ contract Promise {
         lastVoteTime = block.timestamp;
         // Reset votes
         for (uint i = 0; i < users.length; i++) {
-            delete votes[i];
+            for (uint j = 0; j < users.length; j++) {
+                votes[users[i]].vote[users[j]] = false;
+            }
+            votes[users[i]].numVotes = 0;
+        }
+    }
+
+    function castVote(address user, bool vote) public onlyUsers isActive canVote(user) {
+        votes[user].vote[msg.sender] = vote;
+        votes[user].numVotes++;
+    }
+
+    function finalizeVote() public onlyMasterVerifier isActive {
+        for (uint i = 0; i < users.length; i++) {
+            if (votes[users[i]].numVotes < numUsers / 2) {
+                losingUsers.push(users[i]);
+            }
         }
     }
     
