@@ -119,8 +119,28 @@ contract Promise {
             }
         }
     }
+
+    function userIsEligible(address _user) public view returns(bool) {
+        for (uint i = 0; i < users.length; i++) {
+            if (users[i] == _user) {
+                for (uint j = 0; j < losingUsers.length; j++) {
+                    if (losingUsers[j] == _user) {
+                        return false;
+                    }
+                }
+                return true;
+            }
+        }
+        return false;
+    }
     
-    function userSatisfiedPromise(address _user, bool _didSatisfy) public isOpen isVerifier {
-        
+    function payoutCompletedPromise() public isOpen isVerifier {
+        require(block.timestamp >= expiry, "Promise has not yet completed");
+        for (uint i = 0; i < users.length; i++) {
+            if (userIsEligible(users[i])){
+                address payable to = payable(users[i]);
+                to.transfer(entryFee);
+            }
+        }
     }
 }
