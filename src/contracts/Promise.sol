@@ -14,6 +14,7 @@ contract Promise {
     mapping(address => uint) balances;
     mapping(address => bool) eligibleUsers;
     uint public lastVoteTime;
+    bool public isCompleted;
 
     struct Vote {
         mapping(address => int) vote; // -1: not voted, 0: voted yes, 1: voted no
@@ -63,6 +64,11 @@ contract Promise {
     modifier isActive() {
         require(block.timestamp <= expiry, "Promise Has Already Expired");
         require(users.length == numUsers, "All Users Have Not Joined Yet");
+        _;
+    }
+
+    modifier isNotCompleted(){
+        require(isCompleted == false , "Promise has Already Completed");
         _;
     }
 
@@ -134,7 +140,7 @@ contract Promise {
         return false;
     }
     
-    function payoutCompletedPromise() public isOpen isVerifier {
+    function payoutCompletedPromise() public isNotCompleted {
         require(block.timestamp >= expiry, "Promise has not yet completed");
         for (uint i = 0; i < users.length; i++) {
             if (userIsEligible(users[i])){
@@ -142,5 +148,6 @@ contract Promise {
                 to.transfer(entryFee);
             }
         }
+        isCompleted = true;
     }
 }
