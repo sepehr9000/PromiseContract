@@ -1,2 +1,2 @@
-# PromiseContract
+# PromiseContracts
 Coinbase Onboarding Hackathon Project

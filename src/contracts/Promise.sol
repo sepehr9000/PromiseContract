@@ -14,6 +14,7 @@ contract Promise {
     mapping(address => uint) balances;
     mapping(address => bool) eligibleUsers;
     uint public lastVoteTime;
+    bool public isCompleted;
 
     mapping(address => address[]) public votedForMap; // user => users the user voted for
     mapping(address => int) public voteScoreMap;
@@ -67,6 +68,11 @@ contract Promise {
         _;
     }
 
+    modifier isNotCompleted(){
+        require(isCompleted == false , "Promise has Already Completed");
+        _;
+    }
+
     constructor(uint _entryFee, uint _numUsers, uint _cadence, string memory _name, uint _expiry, address _verifier){
         entryFee = _entryFee;
         numUsers = _numUsers;
@@ -114,8 +120,29 @@ contract Promise {
             }
         }
     }
+
+    function userIsEligible(address _user) public view returns(bool) {
+        for (uint i = 0; i < users.length; i++) {
+            if (users[i] == _user) {
+                for (uint j = 0; j < losingUsers.length; j++) {
+                    if (losingUsers[j] == _user) {
+                        return false;
+                    }
+                }
+                return true;
+            }
+        }
+        return false;
+    }
     
-    function userSatisfiedPromise(address _user, bool _didSatisfy) public isOpen isVerifier {
-        
+    function payoutCompletedPromise() public isNotCompleted {
+        require(block.timestamp >= expiry, "Promise has not yet completed");
+        for (uint i = 0; i < users.length; i++) {
+            if (userIsEligible(users[i])){
+                address payable to = payable(users[i]);
+                to.transfer(entryFee);
+            }
+        }
+        isCompleted = true;
     }
 }
