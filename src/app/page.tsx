@@ -21,7 +21,7 @@ import {
 
 export default function App() {
   const { address, isConnected } = useAccount();
-  const { connect, connectors, error, isLoading, pendingConnector } =
+  const { connect, connectors, error, pendingConnector } =
     useConnect();
   const { disconnect } = useDisconnect();
 
